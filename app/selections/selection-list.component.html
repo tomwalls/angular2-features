@@ -1,0 +1,142 @@
+<button class="btn btn-primary" type="button" *ngIf="selections">
+   <i class="fa fa-calendar" aria-hidden="true"></i> selections  
+   <span class="badge">{{totalItems}}</span>
+</button>
+
+<hr/>
+
+<div [@flyInOut]="'in'">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th><i class="fa fa-text-width fa-2x" aria-hidden="true"></i>System</th>
+                <th><i class="fa fa-user fa-2x" aria-hidden="true"></i>SubSystem</th>
+                <th><i class="fa fa-paragraph fa-2x" aria-hidden="true"></i>Date</th>
+                <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Course</th>
+                <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Horse</th>
+                <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Stake</th>
+                <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Odds</th>
+                <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Result</th>
+                <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Profit</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let selection of selections">
+                <td> {{selection.system}}</td>
+                <td>{{selection.subSystem}}</td>
+                <td>{{selection.date | dateFormat | date:'medium'}}</td>
+                <td>{{selection.course}}</td>
+                <td>{{selection.horse}}</td>
+                <td>{{selection.stake}}</td>
+                <td>{{selection.odds}}</td>
+                <td>{{selection.result}}</td>
+                <td>{{selection.profit}}</td>
+                <td><button class="btn btn-primary" (click)="viewselectionDetails(selection.id)">
+            <i class="fa fa-info-circle" aria-hidden="true"></i>Details</button>
+                </td>
+                <td><a class="btn btn-primary" [routerLink]="['/selections',selection.id,'edit']"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit</a></td>
+                <td>
+                    <button class="btn btn-danger" (click)="removeselection(selection)"><i class="fa fa-trash" aria-hidden="true"></i>Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <pagination [boundaryLinks]="true" [totalItems]="totalItems" [itemsPerPage]="itemsPerPage" [(ngModel)]="currentPage" class="pagination-sm"
+        previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" (pageChanged)="pageChanged($event)"></pagination>
+</div>
+
+<div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" *ngIf="selectedselectionLoaded">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-label="Close" (click)="hideChildModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                <h4>{{selectionDetails.title}} details</h4>
+            </div>
+            <div class="modal-body">
+                <form ngNoForm method="post">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="control-label"><i class="fa fa-user" aria-hidden="true"></i>Creator</label>
+                                <input type="text" class="form-control" [(ngModel)]="selectionDetails.creator" disabled />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="control-label"><i class="fa fa-text-width" aria-hidden="true"></i>Title</label>
+                                <input type="text" class="form-control" [(ngModel)]="selectionDetails.title" disabled />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="control-label"><i class="fa fa-paragraph" aria-hidden="true"></i>Description</label>
+                                <input type="text" class="form-control" [(ngModel)]="selectionDetails.description" disabled />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <label class="control-label"><i class="fa fa-calendar-o" aria-hidden="true"></i>Time Start</label>
+                                <input type="text" class="form-control" [(ngModel)]="selectionDetails.timeStart" disabled />
+                            </div>
+
+                            <div class="col-xs-6">
+                                <label class="control-label"><i class="fa fa-calendar-check-o" aria-hidden="true"></i>Time End</label>
+                                <input type="text" class="form-control" [(ngModel)]="selectionDetails.timeEnd" disabled />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="control-label"><i class="fa fa-map-marker" aria-hidden="true"></i>Location</label>
+                                <input type="text" class="form-control" [(ngModel)]="selectionDetails.location" disabled />
+                            </div>
+
+                            <div class="col-md-4 selectContainer">
+                                <label class="control-label"><i class="fa fa-spinner" aria-hidden="true"></i>Status</label>
+                                <input type="text" class="form-control" [(ngModel)]="selectionDetails.status" disabled />
+                            </div>
+                            <div class="col-md-4 selectContainer">
+                                <label class="control-label"><i class="fa fa-tag" aria-hidden="true"></i>Type</label>
+                                <input type="text" class="form-control" [(ngModel)]="selectionDetails.type" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="panel panel-info">
+
+                        <div class="panel-heading">Attendes</div>
+
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th><i class="fa fa-user" aria-hidden="true"></i>Name</th>
+                                    <th><i class="fa fa-linkedin-square" aria-hidden="true"></i>Profession</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let attendee of selectionDetails.attendees">
+                                    <td [style.valign]="'middle'">
+                                        <img class="img-thumbnail img-small" src="{{apiHost}}images/{{attendee.avatar}}" alt="attendee.name" />
+                                    </td>
+                                    <td [style.valign]="'middle'">{{attendee.name}}</td>
+                                    <td [style.valign]="'middle'">{{attendee.profession}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+</div>

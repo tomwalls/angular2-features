@@ -6,7 +6,7 @@ import {Observer} from 'rxjs/Observer';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
-import { IUser, ISchedule, IScheduleDetails, Pagination, PaginatedResult } from '../interfaces';
+import { IUser, ISchedule, IScheduleDetails, ISelection, ISelectionDetails, Pagination, PaginatedResult } from '../interfaces';
 import { ItemsService } from '../utils/items.service';
 import { ConfigService } from '../utils/config.service';
 
@@ -14,11 +14,47 @@ import { ConfigService } from '../utils/config.service';
 export class DataService {
 
     _baseUrl: string = '';
+    _baseBettingUrl: string = '';
 
     constructor(private http: Http,
         private itemsService: ItemsService,
         private configService: ConfigService) {
         this._baseUrl = configService.getApiURI();
+        this._baseBettingUrl = configService.getBettingApiURI();
+    }
+
+    getSelections(page?: number, itemsPerPage?: number): Observable<PaginatedResult<ISelection[]>> {
+        var peginatedResult: PaginatedResult<ISelection[]> = new PaginatedResult<ISelection[]>();
+
+        let headers = new Headers();
+        if (page != null && itemsPerPage != null) {
+            headers.append('Pagination', page + ',' + itemsPerPage);
+        }
+
+        return this.http.get(this._baseBettingUrl + 'selections', {
+            headers: headers
+        })
+            .map((res: Response) => {
+                console.log(res.headers.keys());
+                peginatedResult.result = res.json();
+
+                if (res.headers.get("Pagination") != null) {
+                    //var pagination = JSON.parse(res.headers.get("Pagination"));
+                    var paginationHeader: Pagination = this.itemsService.getSerialized<Pagination>(JSON.parse(res.headers.get("Pagination")));
+                    console.log(paginationHeader);
+                    peginatedResult.pagination = paginationHeader;
+                }
+                return peginatedResult;
+            })
+            .catch(this.handleError);
+    }
+
+    getSelectionDetails(id: number): Observable<ISelectionDetails> {
+        return this.http.get(this._baseBettingUrl + 'selections/' + id + '/details')
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
     }
 
     getUsers(): Observable<IUser[]> {
