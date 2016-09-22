@@ -7,7 +7,7 @@ import { Component, OnInit, ViewChild, Input, Output,
 
 import { ModalDirective } from 'ng2-bootstrap';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
-
+import { CHART_DIRECTIVES } from 'angular2-highcharts';
 import { DataService } from '../shared/services/data.service';
 import { DateFormatPipe } from '../shared/pipes/date-format.pipe';
 import { ItemsService } from '../shared/utils/items.service';
@@ -61,6 +61,7 @@ export class SelectionListComponent implements OnInit {
     animation: boolean = true;
     keyboard: boolean = true;
     backdrop: string | boolean = true;
+    options: Object;
 
     constructor(
         private dataService: DataService,
@@ -70,6 +71,25 @@ export class SelectionListComponent implements OnInit {
         private loadingBarService:SlimLoadingBarService) { }
 
     ngOnInit() {
+        console.log('yeooooo');
+        
+        Highcharts.chart('container', {
+            title: {
+                text: 'Records'
+            },
+
+            xAxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+                ]
+            },
+
+            series: [{
+                data: [29.9, -71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+            }]
+            });
+
+        console.log(this.options);
         this.apiHost = this.configService.getBettingApiHost();
         this.loadSelections();
     }
@@ -80,6 +100,23 @@ export class SelectionListComponent implements OnInit {
         this.dataService.getSelections(this.currentPage, this.itemsPerPage)
             .subscribe((res: PaginatedResult<ISelection[]>) => {
                 this.selections = res.result;// schedules;
+                this.totalItems = res.pagination.TotalItems;
+                this.loadingBarService.complete();
+            },
+            error => {
+                this.loadingBarService.complete();
+                this.notificationService.printErrorMessage('Failed to load selections. ' + error);
+            });
+    }
+
+    loadSystemSelections(system: string)
+    {
+        this.loadingBarService.start();
+
+        this.dataService.getSystemSelections(system, this.currentPage, this.itemsPerPage)
+            .subscribe((res: PaginatedResult<ISelection[]>) => {
+                console.log(this.itemsPerPage)
+                this.selections = res.result;// selections;
                 this.totalItems = res.pagination.TotalItems;
                 this.loadingBarService.complete();
             },

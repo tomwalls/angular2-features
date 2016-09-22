@@ -49,8 +49,34 @@ export class DataService {
             .catch(this.handleError);
     }
 
+    getSystemSelections(id: string, page?: number, itemsPerPage?: number): Observable<PaginatedResult<ISelection[]>> {
+        var peginatedResult: PaginatedResult<ISelection[]> = new PaginatedResult<ISelection[]>();
+
+        let headers = new Headers();
+        if (page != null && itemsPerPage != null) {
+            headers.append('Pagination', page + ',' + itemsPerPage);
+        }
+
+        return this.http.get(this._baseBettingUrl + 'selections/' + id + '/record', {
+            headers: headers
+        })
+            .map((res: Response) => {
+                console.log(res.headers.keys());
+                peginatedResult.result = res.json();
+
+                if (res.headers.get("Pagination") != null) {
+                    //var pagination = JSON.parse(res.headers.get("Pagination"));
+                    var paginationHeader: Pagination = this.itemsService.getSerialized<Pagination>(JSON.parse(res.headers.get("Pagination")));
+                    console.log(paginationHeader);
+                    peginatedResult.pagination = paginationHeader;
+                }
+                return peginatedResult;
+            })
+            .catch(this.handleError);
+    }
+
     getSelectionDetails(id: number): Observable<ISelectionDetails> {
-        return this.http.get(this._baseBettingUrl + 'selections/' + id + '/details')
+        return this.http.get(this._baseBettingUrl + 'selections/' + id + '/record')
             .map((res: Response) => {
                 return res.json();
             })

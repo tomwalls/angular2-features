@@ -2,9 +2,10 @@
    <i class="fa fa-calendar" aria-hidden="true"></i> selections  
    <span class="badge">{{totalItems}}</span>
 </button>
-
+ <div id="container">Placeholder for chart</div>
 <hr/>
-
+<button class="btn btn-primary" (click)="loadSystemSelections('Flat Best Bet')">
+            <i class="fa fa-info-circle" aria-hidden="true"></i>Flat Best Bets</button>
 <div [@flyInOut]="'in'">
     <table class="table table-hover">
         <thead>
