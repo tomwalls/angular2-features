@@ -11,6 +11,28 @@
      profit: number;
 }
 
+export interface IDashboard {
+     
+     system: string;
+     selections: number;
+     wins: number;
+     losses: number;
+     strikeRate: number;
+     staked: number;
+     return: number;
+     profit: number;
+     yield: number;
+     commission: number;
+     selectionList: ISelection[];
+     graphData: IGraphData;
+}
+
+export interface IGraphData {
+
+    months: string[];
+    returns: number[];
+}
+
 export interface ISelectionDetails {
      /*id: number;
      title: string;

@@ -1,11 +1,62 @@
+
+<div class="row">
+    <div class="col-lg-3 col-md-6">
+        <div class="card card-inverse card-success">
+            <div class="card-block bg-success">
+                <div class="rotate">
+                    <i class="fa fa-user fa-5x"></i>
+                </div>
+                <h6 class="text-uppercase">Selections</h6>
+                <h1 class="display-3" *ngIf="dashboard">{{dashboard.selections | number:'1.0-0'}}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card card-inverse card-danger">
+            <div class="card-block bg-danger">
+                <div class="rotate">
+                    <i class="fa fa-list fa-5x"></i>
+                </div>
+                <h6 class="text-uppercase">Wins</h6>
+                <h1 class="display-3" *ngIf="dashboard">{{dashboard.wins | number:'1.0-0'}}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card card-inverse card-info">
+            <div class="card-block bg-info">
+                <div class="rotate">
+                    <i class="fa fa-twitter fa-5x"></i>
+                </div>
+                <h6 class="text-uppercase">Strike Rate</h6>
+                <h1 class="display-3" *ngIf="dashboard">{{dashboard.strikeRate | number:'1.0-2'}}%</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card card-inverse card-warning">
+            <div class="card-block bg-warning">
+                <div class="rotate">
+                    <i class="fa fa-share fa-5x"></i>
+                </div>
+                <h6 class="text-uppercase">Profit</h6>
+                <h1 class="display-3" *ngIf="dashboard">{{dashboard.profit | currency:'GBP':true:'1.0-0'}}</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <div id="container">Placeholder for chart</div>
+<hr/>
 <button class="btn btn-primary" type="button" *ngIf="selections">
    <i class="fa fa-calendar" aria-hidden="true"></i> selections  
    <span class="badge">{{totalItems}}</span>
 </button>
- <div id="container">Placeholder for chart</div>
-<hr/>
-<button class="btn btn-primary" (click)="loadSystemSelections('Flat Best Bet')">
-            <i class="fa fa-info-circle" aria-hidden="true"></i>Flat Best Bets</button>
+<button class="btn btn-primary" (click)="loadDashboard(null)"><i class="fa fa-info-circle" aria-hidden="true"></i>All</button>
+<button class="btn btn-primary" (click)="loadDashboard('Flat Best Bet')"><i class="fa fa-info-circle" aria-hidden="true"></i>Flat Best Bets</button>
+<button class="btn btn-primary" (click)="loadDashboard('Flat Sire Stats')"><i class="fa fa-info-circle" aria-hidden="true"></i>Flat Sires</button>
+<button class="btn btn-primary" (click)="loadDashboard('Flat Trainers')"><i class="fa fa-info-circle" aria-hidden="true"></i>Flat Trainers</button>
+<button class="btn btn-primary" (click)="loadDashboard('AW Sires')"><i class="fa fa-info-circle" aria-hidden="true"></i>AW Sires</button>
 <div [@flyInOut]="'in'">
     <table class="table table-hover">
         <thead>
@@ -24,8 +75,8 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody>
-            <tr *ngFor="let selection of selections">
+        <tbody *ngIf="dashboard">
+            <tr *ngFor="let selection of dashboard.selectionList">
                 <td> {{selection.system}}</td>
                 <td>{{selection.subSystem}}</td>
                 <td>{{selection.date | dateFormat | date:'medium'}}</td>
@@ -42,7 +93,7 @@
                 <td>
                     <button class="btn btn-danger" (click)="removeselection(selection)"><i class="fa fa-trash" aria-hidden="true"></i>Delete</button>
                 </td>
-            </tr>
+            </tr> 
         </tbody>
     </table>
 

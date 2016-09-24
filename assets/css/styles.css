@@ -98,7 +98,7 @@ footer {
     margin: auto;
     margin-top: 15%;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 968px) {
     .media-object {
         margin-top: 0;
     }
@@ -125,4 +125,10 @@ footer {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+@media (min-width: 1600px){
+  .container{
+    max-width:100%;
+  }  
 }

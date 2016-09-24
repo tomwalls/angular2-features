@@ -13,7 +13,7 @@ import { DateFormatPipe } from '../shared/pipes/date-format.pipe';
 import { ItemsService } from '../shared/utils/items.service';
 import { NotificationService } from '../shared/utils/notification.service';
 import { ConfigService } from '../shared/utils/config.service';
-import { ISelection, ISelectionDetails, Pagination, PaginatedResult } from '../shared/interfaces';
+import { IDashboard, IGraphData, ISelection, ISelectionDetails, Pagination, PaginatedResult } from '../shared/interfaces';
 
 @Component({
     moduleId: module.id,
@@ -41,6 +41,7 @@ import { ISelection, ISelectionDetails, Pagination, PaginatedResult } from '../s
 export class SelectionListComponent implements OnInit {
     @ViewChild('childModal') public childModal: ModalDirective;
     selections: ISelection[];
+    dashboard: IDashboard;
     apiHost: string;
 
     public itemsPerPage: number = 50;
@@ -73,25 +74,11 @@ export class SelectionListComponent implements OnInit {
     ngOnInit() {
         console.log('yeooooo');
         
-        Highcharts.chart('container', {
-            title: {
-                text: 'Records'
-            },
-
-            xAxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-                ]
-            },
-
-            series: [{
-                data: [29.9, -71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
-            }]
-            });
+        
 
         console.log(this.options);
         this.apiHost = this.configService.getBettingApiHost();
-        this.loadSelections();
+        this.loadDashboard(null);
     }
 
     loadSelections() {
@@ -100,7 +87,45 @@ export class SelectionListComponent implements OnInit {
         this.dataService.getSelections(this.currentPage, this.itemsPerPage)
             .subscribe((res: PaginatedResult<ISelection[]>) => {
                 this.selections = res.result;// schedules;
+                console.log(this.selections);
                 this.totalItems = res.pagination.TotalItems;
+                this.loadingBarService.complete();
+            },
+            error => {
+                this.loadingBarService.complete();
+                this.notificationService.printErrorMessage('Failed to load selections. ' + error);
+            });
+    }
+
+    loadDashboard(systemName: string) {
+        this.loadingBarService.start();
+
+        this.dataService.getDashboardData(systemName)
+            .subscribe((res: IDashboard) => {
+                this.dashboard = res;// schedules;
+                console.log('dashboard object');
+                console.log(res);
+                console.log(this.dashboard.graphData.months);
+                
+                Highcharts.chart('container', {
+                    title: {
+                        text: 'Records'
+                    },
+
+                    /*xAxis: {
+                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+                        ]
+                    },*/
+                    xAxis: {
+                        categories: this.dashboard.graphData.months
+                    },
+                    series: [{
+                        data: this.dashboard.graphData.returns
+                    }]
+                });
+
+
                 this.loadingBarService.complete();
             },
             error => {

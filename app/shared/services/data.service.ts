@@ -6,7 +6,7 @@ import {Observer} from 'rxjs/Observer';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
-import { IUser, ISchedule, IScheduleDetails, ISelection, ISelectionDetails, Pagination, PaginatedResult } from '../interfaces';
+import { IUser, ISchedule, IScheduleDetails, IDashboard, ISelection, ISelectionDetails, Pagination, PaginatedResult } from '../interfaces';
 import { ItemsService } from '../utils/items.service';
 import { ConfigService } from '../utils/config.service';
 
@@ -21,6 +21,26 @@ export class DataService {
         private configService: ConfigService) {
         this._baseUrl = configService.getApiURI();
         this._baseBettingUrl = configService.getBettingApiURI();
+    }
+
+    getDashboardData(systemName: string): Observable<IDashboard>
+    {
+        var result: IDashboard;
+        let headers = new Headers();
+        if (systemName != null) {
+            headers.append('SystemName', systemName);
+        }
+        
+        return this.http.get(this._baseBettingUrl + 'dashboard', {
+            headers: headers
+        })
+            .map((res: Response) => {
+                console.log('headers');
+                console.log(res.headers.keys());
+                console.log(res.json());
+                return res.json();
+            })
+            .catch(this.handleError);
     }
 
     getSelections(page?: number, itemsPerPage?: number): Observable<PaginatedResult<ISelection[]>> {
