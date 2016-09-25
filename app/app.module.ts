@@ -21,6 +21,7 @@ import { MobileHideDirective } from './shared/directives/mobile-hide.directive';
 import { ScheduleEditComponent } from './schedules/schedule-edit.component';
 import { ScheduleListComponent } from './schedules/schedule-list.component';
 import { SelectionListComponent } from './selections/selection-list.component';
+import { BetfairListComponent } from './betfairResults/betfair-list.component';
 import { UserCardComponent } from './users/user-card.component';
 import { UserListComponent } from './users/user-list.component';
 import { routing } from './app.routes';
@@ -53,6 +54,7 @@ import { NotificationService } from './shared/utils/notification.service';
         ScheduleEditComponent,
         ScheduleListComponent,
         SelectionListComponent,
+        BetfairListComponent,
         SlimLoadingBarComponent,
         UserCardComponent,
         UserListComponent

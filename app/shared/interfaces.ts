@@ -51,6 +51,41 @@ export interface ISelectionDetails {
      types: string[];*/
 }
 
+export interface IBetfairResult{
+
+    eventTypeId: number,
+    eventType: number,
+    marketId: number,
+    selectionId: number,
+    handicap: number,
+    betId: number,
+    placedDate: Date,
+    persistenceType: string,
+    orderType: string,
+    side: string,
+    itemDescription: {
+      eventTypeDesc: string,
+      eventDesc: string,
+      marketDesc: string,
+      marketType: string,
+      marketStartTime: Date,
+      runnerDesc: string,
+      numberOfWinners: number,
+      eachWayDivisor: number
+    },
+    betOutcome: string,
+    price: number,
+    settledDate: Date,
+    lastMatchedDate: Date,
+    betCount: number,
+    commission: number,
+    priceMatched: number,
+    priceReduced: boolean,
+    sizeSettled: number,
+    profit: number,
+    sizeCancelled: number
+}
+
 export interface IUser {
     id: number;
     name: string;

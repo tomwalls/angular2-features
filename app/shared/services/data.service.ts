@@ -6,7 +6,7 @@ import {Observer} from 'rxjs/Observer';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
-import { IUser, ISchedule, IScheduleDetails, IDashboard, ISelection, ISelectionDetails, Pagination, PaginatedResult } from '../interfaces';
+import { IUser, ISchedule, IScheduleDetails, IBetfairResult, IDashboard, ISelection, ISelectionDetails, Pagination, PaginatedResult } from '../interfaces';
 import { ItemsService } from '../utils/items.service';
 import { ConfigService } from '../utils/config.service';
 
@@ -15,12 +15,14 @@ export class DataService {
 
     _baseUrl: string = '';
     _baseBettingUrl: string = '';
+    _baseBetfairUrl: string = '';
 
     constructor(private http: Http,
         private itemsService: ItemsService,
         private configService: ConfigService) {
         this._baseUrl = configService.getApiURI();
         this._baseBettingUrl = configService.getBettingApiURI();
+        this._baseBetfairUrl = configService.getBettingApiURI();
     }
 
     getSystemNames()
@@ -82,6 +84,26 @@ export class DataService {
                     peginatedResult.pagination = paginationHeader;
                 }
                 return peginatedResult;
+            })
+            .catch(this.handleError);
+    }
+
+    getBetfairResults(): Observable<IBetfairResult[]>
+    {
+        let headers = new Headers();
+        //if (systemName != null) {
+            //headers.append('Content-Type', 'TOMTEST');
+        //}
+        
+        //return this.http.get(this._baseBetfairUrl + '/Betting/BetfairResults', {
+        return this.http.get('http://localhost:54241/Betting/BetfairResults?StartDate=2016-09-25&EndDate=2016-09-26', {
+            headers: headers
+        })
+            .map((res: Response) => {
+                console.log('headers');
+                console.log(res.headers.keys());
+                console.log(res.json());
+                return res.json();
             })
             .catch(this.handleError);
     }
