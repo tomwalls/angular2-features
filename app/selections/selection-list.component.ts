@@ -43,6 +43,7 @@ export class SelectionListComponent implements OnInit {
     selections: ISelection[];
     dashboard: IDashboard;
     apiHost: string;
+    systems: string[];
 
     public itemsPerPage: number = 50;
     public totalItems: number = 0;
@@ -72,13 +73,11 @@ export class SelectionListComponent implements OnInit {
         private loadingBarService:SlimLoadingBarService) { }
 
     ngOnInit() {
-        console.log('yeooooo');
-        
-        
-
+       
         console.log(this.options);
         this.apiHost = this.configService.getBettingApiHost();
         this.loadDashboard(null);
+        this.loadSystemNames();
     }
 
     loadSelections() {
@@ -97,6 +96,21 @@ export class SelectionListComponent implements OnInit {
             });
     }
 
+    loadSystemNames()
+    {
+        this.dataService.getSystemNames()
+            .subscribe((res: string[]) => {
+                this.systems = res;// schedules;
+                console.log('systems object');
+                console.log(this.systems);
+
+            },
+            error => {
+                this.loadingBarService.complete();
+                this.notificationService.printErrorMessage('Failed to load system names. ' + error);
+            });
+    }
+
     loadDashboard(systemName: string) {
         this.loadingBarService.start();
 
@@ -111,12 +125,6 @@ export class SelectionListComponent implements OnInit {
                     title: {
                         text: 'Records'
                     },
-
-                    /*xAxis: {
-                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-                        ]
-                    },*/
                     xAxis: {
                         categories: this.dashboard.graphData.months
                     },

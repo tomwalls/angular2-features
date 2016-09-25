@@ -23,6 +23,23 @@ export class DataService {
         this._baseBettingUrl = configService.getBettingApiURI();
     }
 
+    getSystemNames()
+    {
+        var result: IDashboard;
+        let headers = new Headers();
+        
+        return this.http.get(this._baseBettingUrl + 'dashboard/systems', {
+            headers: headers
+        })
+            .map((res: Response) => {
+                console.log('headers');
+                console.log(res.headers.keys());
+                console.log(res.json());
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
     getDashboardData(systemName: string): Observable<IDashboard>
     {
         var result: IDashboard;

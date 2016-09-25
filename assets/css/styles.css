@@ -132,3 +132,7 @@ footer {
     max-width:100%;
   }  
 }
+
+.winningSelection{
+  background:lightgreen;
+}

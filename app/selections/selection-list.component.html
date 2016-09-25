@@ -1,8 +1,8 @@
 
 <div class="row">
     <div class="col-lg-3 col-md-6">
-        <div class="card card-inverse card-success">
-            <div class="card-block bg-success">
+        <div class="card card-inverse card-info">
+            <div class="card-block bg-info">
                 <div class="rotate">
                     <i class="fa fa-user fa-5x"></i>
                 </div>
@@ -12,10 +12,10 @@
         </div>
     </div>
     <div class="col-lg-3 col-md-6">
-        <div class="card card-inverse card-danger">
-            <div class="card-block bg-danger">
+        <div class="card card-inverse card-success">
+            <div class="card-block bg-success">
                 <div class="rotate">
-                    <i class="fa fa-list fa-5x"></i>
+                    <i class="fa fa-thumbs-up fa-5x"></i>
                 </div>
                 <h6 class="text-uppercase">Wins</h6>
                 <h1 class="display-3" *ngIf="dashboard">{{dashboard.wins | number:'1.0-0'}}</h1>
@@ -23,10 +23,10 @@
         </div>
     </div>
     <div class="col-lg-3 col-md-6">
-        <div class="card card-inverse card-info">
-            <div class="card-block bg-info">
+        <div class="card card-inverse card-danger">
+            <div class="card-block bg-danger">
                 <div class="rotate">
-                    <i class="fa fa-twitter fa-5x"></i>
+                    <i class="fa fa-bolt fa-5x"></i>
                 </div>
                 <h6 class="text-uppercase">Strike Rate</h6>
                 <h1 class="display-3" *ngIf="dashboard">{{dashboard.strikeRate | number:'1.0-2'}}%</h1>
@@ -37,7 +37,7 @@
         <div class="card card-inverse card-warning">
             <div class="card-block bg-warning">
                 <div class="rotate">
-                    <i class="fa fa-share fa-5x"></i>
+                    <i class="fa fa-gbp fa-5x"></i>
                 </div>
                 <h6 class="text-uppercase">Profit</h6>
                 <h1 class="display-3" *ngIf="dashboard">{{dashboard.profit | currency:'GBP':true:'1.0-0'}}</h1>
@@ -52,11 +52,13 @@
    <i class="fa fa-calendar" aria-hidden="true"></i> selections  
    <span class="badge">{{totalItems}}</span>
 </button>
-<button class="btn btn-primary" (click)="loadDashboard(null)"><i class="fa fa-info-circle" aria-hidden="true"></i>All</button>
-<button class="btn btn-primary" (click)="loadDashboard('Flat Best Bet')"><i class="fa fa-info-circle" aria-hidden="true"></i>Flat Best Bets</button>
-<button class="btn btn-primary" (click)="loadDashboard('Flat Sire Stats')"><i class="fa fa-info-circle" aria-hidden="true"></i>Flat Sires</button>
-<button class="btn btn-primary" (click)="loadDashboard('Flat Trainers')"><i class="fa fa-info-circle" aria-hidden="true"></i>Flat Trainers</button>
-<button class="btn btn-primary" (click)="loadDashboard('AW Sires')"><i class="fa fa-info-circle" aria-hidden="true"></i>AW Sires</button>
+
+<div *ngIf="systems">
+    <button class="btn btn-primary" (click)="loadDashboard()"><i class="fa fa-info-circle" aria-hidden="true"></i>All</button>
+    <span *ngFor="let system of systems">
+        <button class="btn btn-primary" (click)="loadDashboard(system)"><i class="fa fa-info-circle" aria-hidden="true"></i>{{system || 'All'}}</button>
+    </span>
+</div>
 <div [@flyInOut]="'in'">
     <table class="table table-hover">
         <thead>
@@ -76,7 +78,7 @@
             </tr>
         </thead>
         <tbody *ngIf="dashboard">
-            <tr *ngFor="let selection of dashboard.selectionList">
+            <tr *ngFor="let selection of dashboard.selectionList" [ngClass]="selection.result==true ?'winningSelection':''">
                 <td> {{selection.system}}</td>
                 <td>{{selection.subSystem}}</td>
                 <td>{{selection.date | dateFormat | date:'medium'}}</td>
