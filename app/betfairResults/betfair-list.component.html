@@ -4,13 +4,14 @@
         <thead>
             <tr>
                 <th><i class="fa fa-text-width fa-2x" aria-hidden="true"></i>Bet ID</th>
-                <th><i class="fa fa-user fa-2x" aria-hidden="true"></i>Date Placed</th>
                 <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Race</th>
                 <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Time</th>
                 <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Horse</th>
                 <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Stake</th>
                 <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Price</th>
                 <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Result</th>
+                <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>System</th>
+                <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>SubSystem</th>
                 <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Profit</th>
                 <th></th>
                 <th></th>
@@ -20,20 +21,24 @@
         <tbody *ngIf="betfairResults">
             <tr *ngFor="let betfairResult of betfairResults">
                 <td>{{betfairResult.betId}}</td>
-                <td>{{betfairResult.placedDate | dateFormat | date:'medium'}}</td>
                 <td>{{betfairResult.itemDescription.eventDesc}}</td>
                 <td>{{betfairResult.itemDescription.marketStartTime | dateFormat | date:'medium'}}</td>
                 <td>{{betfairResult.itemDescription.runnerDesc}}</td>
                 <td>{{betfairResult.sizeSettled}}</td>
                 <td>{{betfairResult.priceMatched}}</td>
                 <td>{{betfairResult.betOutcome}}</td>
+                <td><select [(ngModel)]="betfairResult.system">     
+                    <option *ngFor="let system of systems" [value]="system">{{system}}</option>
+                    </select> 
+                </td>
+                <td><input #box [(ngModel)]="betfairResult.subSystem"></td>
                 <td>{{betfairResult.profit}}</td>
-                <td><button class="btn btn-primary" (click)="viewbetfairResultDetails(betfairResult.id)">
+                <td><button class="btn btn-primary" (click)="viewSystems(betfairResult)">
             <i class="fa fa-info-circle" aria-hidden="true"></i>Details</button>
                 </td>
-                <td><a class="btn btn-primary" [routerLink]="['/betfairResults',betfairResult.id,'edit']"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit</a></td>
+                <td><a class="btn btn-primary" [routerLink]="['/betfairResult',betfairResult.betId,'edit']"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit</a></td>
                 <td>
-                    <button class="btn btn-danger" (click)="removebetfairResult(betfairResult)"><i class="fa fa-trash" aria-hidden="true"></i>Delete</button>
+                    <button class="btn btn-danger" (click)="createRecord(betfairResult)"><i class="fa fa-trash" aria-hidden="true"></i>Create</button>
                 </td>
             </tr> 
         </tbody>
@@ -50,30 +55,30 @@
                 <button type="button" class="close" aria-label="Close" (click)="hideChildModal()">
           <span aria-hidden="true">&times;</span>
         </button>
-                <h4>{{betfairResultDetails.title}} details</h4>
+                <h4>{{betfairResultDetails.betId}} details</h4>
             </div>
             <div class="modal-body">
                 <form ngNoForm method="post">
                     <div class="form-group">
                         <div class="row">
                             <div class="col-md-4">
-                                <label class="control-label"><i class="fa fa-user" aria-hidden="true"></i>Creator</label>
-                                <input type="text" class="form-control" [(ngModel)]="betfairResultDetails.creator" disabled />
+                                <label class="control-label"><i class="fa fa-user" aria-hidden="true"></i>Race</label>
+                                <input type="text" class="form-control" [(ngModel)]="betfairResultDetails.itemDescription.eventDesc" disabled />
                             </div>
 
                             <div class="col-md-4">
-                                <label class="control-label"><i class="fa fa-text-width" aria-hidden="true"></i>Title</label>
-                                <input type="text" class="form-control" [(ngModel)]="betfairResultDetails.title" disabled />
+                                <label class="control-label"><i class="fa fa-text-width" aria-hidden="true"></i>Horse</label>
+                                <input type="text" class="form-control" [(ngModel)]="betfairResultDetails.itemDescription.runnerDesc" disabled />
                             </div>
 
                             <div class="col-md-4">
-                                <label class="control-label"><i class="fa fa-paragraph" aria-hidden="true"></i>Description</label>
-                                <input type="text" class="form-control" [(ngModel)]="betfairResultDetails.description" disabled />
+                                <label class="control-label"><i class="fa fa-paragraph" aria-hidden="true"></i>Result</label>
+                                <input type="text" class="form-control" [(ngModel)]="betfairResultDetails.betOutcome" disabled />
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <div class="row">
                             <div class="col-xs-6">
                                 <label class="control-label"><i class="fa fa-calendar-o" aria-hidden="true"></i>Time Start</label>
@@ -85,31 +90,32 @@
                                 <input type="text" class="form-control" [(ngModel)]="betfairResultDetails.timeEnd" disabled />
                             </div>
                         </div>
-                    </div>
+                    </div>-->
 
                     <div class="form-group">
                         <div class="row">
                             <div class="col-md-4">
-                                <label class="control-label"><i class="fa fa-map-marker" aria-hidden="true"></i>Location</label>
-                                <input type="text" class="form-control" [(ngModel)]="betfairResultDetails.location" disabled />
+                                <label class="control-label"><i class="fa fa-map-marker" aria-hidden="true"></i>Stake</label>
+                                <input type="text" class="form-control" [(ngModel)]="betfairResultDetails.sizeSettled" disabled />
                             </div>
 
                             <div class="col-md-4 selectContainer">
-                                <label class="control-label"><i class="fa fa-spinner" aria-hidden="true"></i>Status</label>
-                                <input type="text" class="form-control" [(ngModel)]="betfairResultDetails.status" disabled />
+                                <label class="control-label"><i class="fa fa-spinner" aria-hidden="true"></i>Price</label>
+                                <input type="text" class="form-control" [(ngModel)]="betfairResultDetails.priceMatched" disabled />
                             </div>
                             <div class="col-md-4 selectContainer">
-                                <label class="control-label"><i class="fa fa-tag" aria-hidden="true"></i>Type</label>
-                                <input type="text" class="form-control" [(ngModel)]="betfairResultDetails.type" disabled />
+                                <label class="control-label"><i class="fa fa-tag" aria-hidden="true"></i>Profit</label>
+                                <input type="text" class="form-control" [(ngModel)]="betfairResultDetails.profit" disabled />
                             </div>
                         </div>
                     </div>
                     <hr/>
                     <div class="panel panel-info">
-
-                        <div class="panel-heading">Attendes</div>
-
-                        <table class="table table-hover">
+                        <span *ngFor="let system of systems">
+                            <button class="btn btn-primary" (click)="assignSystem(betfairResult)"><i class="fa fa-info-circle" aria-hidden="true"></i>{{system || 'All'}}</button>
+                        </span>
+                    <!--<div class="panel-heading">System</div>
+                       <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -118,7 +124,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let attendee of betfairResultDetails.attendees">
+                                <span *ngFor="let system of systems">
+                                    <button class="btn btn-primary" (click)="loadDashboard(system)"><i class="fa fa-info-circle" aria-hidden="true"></i>{{system || 'All'}}</button>
+                                </span>
+                                <tr *ngFor="let system of systems">
                                     <td [style.valign]="'middle'">
                                         <img class="img-thumbnail img-small" src="{{apiHost}}images/{{attendee.avatar}}" alt="attendee.name" />
                                     </td>
@@ -126,7 +135,7 @@
                                     <td [style.valign]="'middle'">{{attendee.profession}}</td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table>-->
                     </div>
                 </form>
             </div>

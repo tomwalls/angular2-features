@@ -1,5 +1,5 @@
-<form #editScheduleForm="ngForm" *ngIf="scheduleLoaded" novalidate>
-    <div class="alert alert-danger" [hidden]="editScheduleForm.form.valid">
+<form #editBetfiarRecordForm="ngForm" *ngIf="betfairResultLoaded" novalidate>
+    <!--<div class="alert alert-danger" [hidden]="editBetfiarRecordForm.form.valid">
         <ul *ngIf="creator.dirty && !creator.valid">
             <li>Creator name is required <i>(5-50 characters)</i></li>
         </ul>
@@ -15,36 +15,37 @@
             <li *ngIf="location.errors.required">Location is required</li>
         </ul>
     </div>
+    -->
 
     <button type="button" class="btn btn-danger" (click)="back()">
         <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>Back</button>
-    <button type="button" [disabled]="!editScheduleForm.form.valid" class="btn btn-default" (click)="updateSchedule(editScheduleForm)">
+    <button type="button"  class="btn btn-default" (click)="updateBetfairResult(editBetfiarRecordForm)">
         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>Update</button>
 
     <hr/>
 
-    <div class="form-group">
+    <div *ngIf="betfairResult" class="form-group">
         <div class="row">
             <div class="col-md-4">
-                <label class="control-label"><i class="fa fa-user" aria-hidden="true"></i>Creator</label>
-                <input type="text" class="form-control" [(ngModel)]="schedule.creator" name="creator" #creator="ngModel" required pattern=".{5,50}"
+                <label class="control-label"><i class="fa fa-user" aria-hidden="true"></i>Id</label>
+                <input type="text" class="form-control" [(ngModel)]="betfairResult.betId" name="creator" #creator="ngModel" required pattern=".{5,50}"
                     disabled />
             </div>
 
             <div class="col-md-4">
-                <label class="control-label"><i class="fa fa-text-width" aria-hidden="true"></i>Title</label>
-                <input type="text" class="form-control" [(ngModel)]="schedule.title" name="title" #title="ngModel" required pattern=".{5,20}"
+                <label class="control-label"><i class="fa fa-text-width" aria-hidden="true"></i>Horse</label>
+                <input type="text" class="form-control" [(ngModel)]="betfairResult.betOutcome" name="title" #title="ngModel" required pattern=".{5,20}"
                 />
             </div>
 
             <div class="col-md-4">
                 <label class="control-label"><i class="fa fa-paragraph" aria-hidden="true"></i>Description</label>
-                <input type="text" class="form-control" [(ngModel)]="schedule.description" name="description" #description="ngModel" required
+                <input type="text" class="form-control" [(ngModel)]="betfairResult.placedDate" name="description" #description="ngModel" required
                     pattern=".{10,}" />
             </div>
         </div>
     </div>
-
+<!--
     <div class="form-group">
         <div class="row">
             <div class="col-xs-6">
@@ -83,6 +84,7 @@
         </div>
     </div>
     <hr/>
+-->
     <div class="panel panel-info">
         <!-- Default panel contents -->
         <div class="panel-heading">Attendes</div>
@@ -98,7 +100,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let attendee of schedule.attendees">
+                <!--<tr *ngFor="let attendee of schedule.attendees">
                     <td [style.valign]="'middle'">
                         <img class="img-thumbnail img-small" src="{{apiHost}}images/{{attendee.avatar}}" alt="attendee.name" />
                     </td>
@@ -108,7 +110,9 @@
                         <button type="button" class="btn btn-danger btn-sm" (click)="removeAttendee(attendee)"><i class="fa fa-user-times" aria-hidden="true"></i>Remove</button>
                     </td>
                 </tr>
+                -->
             </tbody>
         </table>
     </div>
+    
 </form>

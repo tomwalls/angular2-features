@@ -83,7 +83,9 @@ export interface IBetfairResult{
     priceReduced: boolean,
     sizeSettled: number,
     profit: number,
-    sizeCancelled: number
+    sizeCancelled: number,
+    system: string,
+    subSystem: string
 }
 
 export interface IUser {

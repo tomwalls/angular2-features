@@ -9,21 +9,22 @@ import { ItemsService } from '../shared/utils/items.service';
 import { NotificationService } from '../shared/utils/notification.service';
 import { ConfigService } from '../shared/utils/config.service';
 import { MappingService } from '../shared/utils/mapping.service';
-import { ISchedule, IScheduleDetails, IUser } from '../shared/interfaces';
+import { IBetfairResult, ISchedule, IScheduleDetails, IUser } from '../shared/interfaces';
 import { DateFormatPipe } from '../shared/pipes/date-format.pipe';
 
 @Component({
     moduleId: module.id,
-    selector: 'app-schedule-edit',
-    templateUrl: 'schedule-edit.component.html'
+    selector: 'app-betfair-edit',
+    templateUrl: 'betfair-edit.component.html'
 })
-export class ScheduleEditComponent implements OnInit {
+export class BetfairEditComponent implements OnInit {
     apiHost: string;
-    id: number;
-    schedule: IScheduleDetails;
-    scheduleLoaded: boolean = false;
+    id: string;
+    betfairResult: IBetfairResult;
+    betfairResultLoaded: boolean = false;
     statuses: string[];
     types: string[];
+    systemName: string;
     private sub: any;
 
     constructor(private route: ActivatedRoute,
@@ -37,38 +38,42 @@ export class ScheduleEditComponent implements OnInit {
 
     ngOnInit() {
         // (+) converts string 'id' to a number
-	    this.id = +this.route.snapshot.params['id'];
+	    this.id = this.route.snapshot.params['id'];
         this.apiHost = this.configService.getApiHost();
-        this.loadScheduleDetails();
+        this.loadBetfairResultDetails();
     }
 
-    loadScheduleDetails() {
+    loadBetfairResultDetails() {
         this.loadingBarService.start();
-        this.dataService.getScheduleDetails(this.id)
-            .subscribe((schedule: IScheduleDetails) => {
-                this.schedule = this.itemsService.getSerialized<IScheduleDetails>(schedule);
-                this.scheduleLoaded = true;
+        this.dataService.getBetfairResultDetails(this.id)
+            .subscribe((betfairResult: IBetfairResult) => {
+                this.betfairResult = this.itemsService.getSerialized<IBetfairResult>(betfairResult[0]);
+                console.log(this.betfairResult);
+                console.log('result returned');
+                this.betfairResultLoaded = true;
                 // Convert date times to readable format
-                this.schedule.timeStart = new Date(this.schedule.timeStart.toString()); // new DateFormatPipe().transform(schedule.timeStart, ['local']);
-                this.schedule.timeEnd = new Date(this.schedule.timeEnd.toString()); //new DateFormatPipe().transform(schedule.timeEnd, ['local']);
-                this.statuses = this.schedule.statuses;
-                this.types = this.schedule.types;
-
+               // this.schedule.timeStart = new Date(this.schedule.timeStart.toString()); // new DateFormatPipe().transform(schedule.timeStart, ['local']);
+               // this.schedule.timeEnd = new Date(this.schedule.timeEnd.toString()); //new DateFormatPipe().transform(schedule.timeEnd, ['local']);
+               // this.statuses = this.schedule.statuses;
+               // this.types = this.schedule.types;
+                this.systemName = '';
                 this.loadingBarService.complete();
             },
             error => {
                 this.loadingBarService.complete();
-                this.notificationService.printErrorMessage('Failed to load schedule. ' + error);
+                this.notificationService.printErrorMessage('Failed to load result. ' + error);
             });
     }
 
-    updateSchedule(editScheduleForm: NgForm) {
-        console.log(editScheduleForm.value);
+    updateBetfairResult(editBetfairResultForm: NgForm) {
+        console.log(editBetfairResultForm.value);
 
-        var scheduleMapped = this.mappingService.mapScheduleDetailsToSchedule(this.schedule);
+        var betfairResultMapped = this.mappingService.mapBetfairResultDetailsToSelection(this.betfairResult);
+
+        console.log(betfairResultMapped);
 
         this.loadingBarService.start();
-        this.dataService.updateSchedule(scheduleMapped)
+        this.dataService.saveBetfairResultAsSelection(betfairResultMapped)
             .subscribe(() => {
                 this.notificationService.printSuccessMessage('Schedule has been updated');
                 this.loadingBarService.complete();
@@ -79,7 +84,7 @@ export class ScheduleEditComponent implements OnInit {
             });
     }
 
-    removeAttendee(attendee: IUser) {
+    /*removeAttendee(attendee: IUser) {
         this.notificationService.openConfirmationDialog('Are you sure you want to remove '
             + attendee.name + ' from this schedule?',
             () => {
@@ -95,10 +100,10 @@ export class ScheduleEditComponent implements OnInit {
                         this.notificationService.printErrorMessage('Failed to remove ' + attendee.name + ' ' + error);
                     });
             });
-    }
+    }*/
 
     back() {
-        this.router.navigate(['/schedules']);
+        this.router.navigate(['/betfair']);
     }
 
 }

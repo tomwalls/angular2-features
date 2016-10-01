@@ -134,6 +134,50 @@ export class DataService {
             .catch(this.handleError);
     }
 
+    getBetfairResultDetails(id: string): Observable<IBetfairResult> {
+        console.log(id);
+
+            return this.http.get('http://localhost:54241/Betting/BetfairResult?Id='+id)
+                .map((res: Response) => {
+                    return res.json();
+                })
+                .catch(this.handleError);
+     }
+
+     saveBetfairResultAsSelection(selection: ISelection): Observable<void> {
+
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
+
+        return this.http.post(this._baseUrl + 'selections/', JSON.stringify(selection), {
+            headers: headers
+        })
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+     }
+
+
+    createBetfairResult(betfairResult: IBetfairResult): Observable<IBetfairResult>
+    {
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
+        console.log('data service - createBetfairResult')
+        console.log(betfairResult);
+
+       return this.http.post(this._baseBettingUrl + 'selections/', JSON.stringify(betfairResult), {
+            headers: headers
+        })
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+    
+
     getSelectionDetails(id: number): Observable<ISelectionDetails> {
         return this.http.get(this._baseBettingUrl + 'selections/' + id + '/record')
             .map((res: Response) => {
