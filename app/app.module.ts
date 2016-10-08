@@ -21,11 +21,14 @@ import { MobileHideDirective } from './shared/directives/mobile-hide.directive';
 import { ScheduleEditComponent } from './schedules/schedule-edit.component';
 import { ScheduleListComponent } from './schedules/schedule-list.component';
 import { SelectionListComponent } from './selections/selection-list.component';
+import { QualifiersListComponent } from './qualifiers/qualifiers-list.component';
 import { BetfairListComponent } from './betfairResults/betfair-list.component';
 import { BetfairEditComponent } from './betfairResults/betfair-edit.component';
 import { UserCardComponent } from './users/user-card.component';
 import { UserListComponent } from './users/user-list.component';
 import { routing } from './app.routes';
+import { UPLOAD_DIRECTIVES, NgFileDropDirective } from 'ng2-uploader';
+import { FileDropDirective, FileSelectDirective } from 'ng2-file-upload';
 
 import { DataService } from './shared/services/data.service';
 import { ConfigService } from './shared/utils/config.service';
@@ -55,11 +58,16 @@ import { NotificationService } from './shared/utils/notification.service';
         ScheduleEditComponent,
         ScheduleListComponent,
         SelectionListComponent,
+        QualifiersListComponent,
         BetfairListComponent,
         BetfairEditComponent,
         SlimLoadingBarComponent,
         UserCardComponent,
-        UserListComponent
+        UserListComponent,
+        UPLOAD_DIRECTIVES,
+        NgFileDropDirective,
+        FileDropDirective,
+        FileSelectDirective
     ],
     providers: [
         ConfigService,

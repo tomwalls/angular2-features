@@ -29,6 +29,8 @@
             'moment': 'npm:moment/',
             'ng2-bootstrap': 'npm:ng2-bootstrap',
             'ng2-slim-loading-bar': 'npm:ng2-slim-loading-bar',
+            'ng2-file-upload': 'npm:ng2-file-upload',
+            'ng2-uploader': 'npm:ng2-uploader',
             'symbol-observable': 'npm:symbol-observable'
         },
         // packages tells the System loader how to load when no filename and/or no extension
@@ -46,6 +48,8 @@
             },
             'moment': { main: 'moment.js', defaultExtension: 'js' },
             'ng2-bootstrap': { main: 'ng2-bootstrap.js', defaultExtension: 'js' },
+            'ng2-uploader': { main: 'ng2-uploader.js', defaultExtension: 'js' },
+            'ng2-file-upload': { main: 'ng2-file-upload.js', defaultExtension: 'js' },
             'ng2-slim-loading-bar': { main: 'index.js', defaultExtension: 'js' },
             'symbol-observable': { main: 'index.js', defaultExtension: 'js' }
         }

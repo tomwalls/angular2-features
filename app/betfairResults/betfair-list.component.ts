@@ -14,6 +14,10 @@ import { ItemsService } from '../shared/utils/items.service';
 import { NotificationService } from '../shared/utils/notification.service';
 import { ConfigService } from '../shared/utils/config.service';
 import { IDashboard, IBetfairResult, ISelection, ISelectionDetails, Pagination, PaginatedResult } from '../shared/interfaces';
+import { FileUploader } from 'ng2-file-upload';
+
+    // upload url
+const URL = '/api/';
 
 @Component({
     moduleId: module.id,
@@ -39,6 +43,19 @@ import { IDashboard, IBetfairResult, ISelection, ISelectionDetails, Pagination, 
     ]
 })
 export class BetfairListComponent implements OnInit {
+
+    public uploader:FileUploader = new FileUploader({url: URL});
+    public hasBaseDropZoneOver:boolean = false;
+    public hasAnotherDropZoneOver:boolean = false;
+    
+    public fileOverBase(e:any):void {
+    this.hasBaseDropZoneOver = e;
+    }
+    
+    public fileOverAnother(e:any):void {
+    this.hasAnotherDropZoneOver = e;
+    }
+
     @ViewChild('childModal') public childModal: ModalDirective;
     betfairResults: IBetfairResult[];
     dashboard: IDashboard;
