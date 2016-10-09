@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input, Output,
+import { Component, OnInit, ViewChild, Input, Output, EventEmitter,
     trigger,
     state,
     style,
@@ -48,7 +48,7 @@ export class QualifiersListComponent implements OnInit {
 uploadFile: any;
   hasBaseDropZoneOver: boolean = false;
   options: Object = {
-    url: 'http://localhost:8153/api/csv/import'
+    url: 'http://localhost:8153/api/qualifiers/import'
   };
 
   handleUpload(data): void {
@@ -63,30 +63,27 @@ uploadFile: any;
       console.log(data);
       this.uploadFile = data;
     }
+
+    this.loadQualifers();
   }
 
   fileOverBase(e:any):void {
     this.hasBaseDropZoneOver = e;
   }
 
-
     public uploader:FileUploader = new FileUploader({url: URL});
-    //public hasBaseDropZoneOver:boolean = false;
     public hasAnotherDropZoneOver:boolean = false;
-    
-    //public fileOverBase(e:any):void {
-    //this.hasBaseDropZoneOver = e;
-    //}
     
     public fileOverAnother(e:any):void {
     this.hasAnotherDropZoneOver = e;
     }
 
     @ViewChild('childModal') public childModal: ModalDirective;
-    selections: ISelection[];
+    qualifiers: ISelection[];
     dashboard: IDashboard;
     apiHost: string;
     systems: string[];
+    @Output() qualifierCreated = new EventEmitter();
 
     public itemsPerPage: number = 50;
     public totalItems: number = 0;
@@ -117,135 +114,67 @@ uploadFile: any;
 
     ngOnInit() {
        
-        console.log(this.options);
+        //console.log(this.options);
         this.apiHost = this.configService.getBettingApiHost();
         //this.loadDashboard(null);
         //this.loadSystemNames();
+        this.loadQualifers();
     }
 
-    loadSelections() {
+    loadQualifers() {
         this.loadingBarService.start();
 
-        this.dataService.getSelections(this.currentPage, this.itemsPerPage)
-            .subscribe((res: PaginatedResult<ISelection[]>) => {
-                this.selections = res.result;// schedules;
-                console.log(this.selections);
-                this.totalItems = res.pagination.TotalItems;
+        this.dataService.getQualifiers()
+             .subscribe((res: ISelection[]) => {
+                this.qualifiers = res;// schedules;
+               // console.log(this.selections);
+                //this.totalItems = res.pagination.TotalItems;
+                console.log(this.qualifiers)
                 this.loadingBarService.complete();
             },
             error => {
                 this.loadingBarService.complete();
-                this.notificationService.printErrorMessage('Failed to load selections. ' + error);
+                this.notificationService.printErrorMessage('Failed to load qualifiers. ' + error);
             });
     }
 
-    loadSystemNames()
-    {
-        this.dataService.getSystemNames()
-            .subscribe((res: string[]) => {
-                this.systems = res;// schedules;
-                console.log('systems object');
-                console.log(this.systems);
+    createQualifier(qualifier: ISelection) {
+            //this.slimLoader.start();
+            console.log('creating qualifier');
+            console.log(qualifier);
+            this.dataService.createQualifier(qualifier)
+                .subscribe((qualifierCreated) => {
+                   // this.user = this.itemsService.getSerialized<IUser>(userCreated);
+                    //this.edittedUser = this.itemsService.getSerialized<IUser>(this.user);
+                   // this.onEdit = false;
 
-            },
-            error => {
-                this.loadingBarService.complete();
-                this.notificationService.printErrorMessage('Failed to load system names. ' + error);
-            });
-    }
-
-    loadDashboard(systemName: string) {
-        this.loadingBarService.start();
-
-        this.dataService.getDashboardData(systemName)
-            .subscribe((res: IDashboard) => {
-                this.dashboard = res;// schedules;
-                console.log('dashboard object');
-                console.log(res);
-                console.log(this.dashboard.graphData.months);
-                
-                Highcharts.chart('container', {
-                    title: {
-                        text: 'Records'
-                    },
-                    xAxis: {
-                        categories: this.dashboard.graphData.months
-                    },
-                    series: [{
-                        data: this.dashboard.graphData.returns
-                    }]
+                    this.qualifierCreated.emit({ value: qualifierCreated });
+                    //this.slimLoader.complete();
+                },
+                error => {
+                    this.notificationService.printErrorMessage('Failed to created user');
+                    this.notificationService.printErrorMessage(error);
+                    //this.slimLoader.complete();
                 });
+        }
+    
+    deleteQualifier(qualifier: ISelection) {
+            //this.slimLoader.start();
+            console.log('deleting qualifier');
+            console.log(qualifier);
+            this.dataService.deleteQualifier(qualifier)
+                .subscribe((qualifierCreated) => {
+                   // this.user = this.itemsService.getSerialized<IUser>(userCreated);
+                    //this.edittedUser = this.itemsService.getSerialized<IUser>(this.user);
+                   // this.onEdit = false;
 
-
-                this.loadingBarService.complete();
-            },
-            error => {
-                this.loadingBarService.complete();
-                this.notificationService.printErrorMessage('Failed to load selections. ' + error);
-            });
-    }
-
-    loadSystemSelections(system: string)
-    {
-        this.loadingBarService.start();
-
-        this.dataService.getSystemSelections(system, this.currentPage, this.itemsPerPage)
-            .subscribe((res: PaginatedResult<ISelection[]>) => {
-                console.log(this.itemsPerPage)
-                this.selections = res.result;// selections;
-                this.totalItems = res.pagination.TotalItems;
-                this.loadingBarService.complete();
-            },
-            error => {
-                this.loadingBarService.complete();
-                this.notificationService.printErrorMessage('Failed to load selections. ' + error);
-            });
-    }
-
-    pageChanged(event: any): void {
-        this.currentPage = event.page;
-        this.loadSelections();
-        //console.log('Page changed to: ' + event.page);
-        //console.log('Number items per page: ' + event.itemsPerPage);
-    };
-
-    removeSelection(selection: ISelection) {
-        this.notificationService.openConfirmationDialog('Are you sure you want to delete this selection?',
-            () => {
-                this.loadingBarService.start();
-                this.dataService.deleteSchedule(selection.id)
-                    .subscribe(() => {
-                        this.itemsService.removeItemFromArray<ISelection>(this.selections, selection);
-                        this.notificationService.printSuccessMessage(selection.horse + ' has been deleted.');
-                        this.loadingBarService.complete();
-                    },
-                    error => {
-                        this.loadingBarService.complete();
-                        this.notificationService.printErrorMessage('Failed to delete ' + selection.horse + ' ' + error);
-                    });
-            });
-    }
-
-    viewSelectionDetails(id: number) {
-        this.selectedSelectionId = id;
-
-        this.dataService.getSelectionDetails(this.selectedSelectionId)
-            .subscribe((schedule: ISelectionDetails) => {
-                this.scheduleDetails = this.itemsService.getSerialized<ISelectionDetails>(schedule);
-                // Convert date times to readable format
-                /*this.scheduleDetails.timeStart = new DateFormatPipe().transform(schedule.timeStart, ['local']);
-                this.scheduleDetails.timeEnd = new DateFormatPipe().transform(schedule.timeEnd, ['local']);
-                this.loadingBarService.complete();
-                this.selectedScheduleLoaded = true;
-                this.childModal.show();//.open('lg');*/
-            },
-            error => {
-                this.loadingBarService.complete();
-                this.notificationService.printErrorMessage('Failed to load selection. ' + error);
-            });
-    }
-
-    public hideChildModal(): void {
-        this.childModal.hide();
-    }
+                    this.qualifierCreated.emit({ value: qualifierCreated });
+                    //this.slimLoader.complete();
+                },
+                error => {
+                    this.notificationService.printErrorMessage('Failed to created user');
+                    this.notificationService.printErrorMessage(error);
+                    //this.slimLoader.complete();
+                });
+        }
 }

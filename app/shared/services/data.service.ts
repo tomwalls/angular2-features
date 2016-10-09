@@ -88,6 +88,20 @@ export class DataService {
             .catch(this.handleError);
     }
 
+    getQualifiers(): Observable<ISelection[]> {
+
+        let headers = new Headers();
+
+        return this.http.get(this._baseBettingUrl + 'qualifiers', {
+            headers: headers
+        })
+            .map((res: Response) => {
+                console.log(res.headers.keys());
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
     getBetfairResults(): Observable<IBetfairResult[]>
     {
         let headers = new Headers();
@@ -95,8 +109,8 @@ export class DataService {
             //headers.append('Content-Type', 'TOMTEST');
         //}
         
-        //return this.http.get(this._baseBetfairUrl + '/Betting/BetfairResults', {
-        return this.http.get('http://localhost:54241/Betting/BetfairResults?StartDate=2016-09-25&EndDate=2016-09-26', {
+        return this.http.get(this._baseBetfairUrl + '/qualifiers/betfair', {
+        //return this.http.get('http://localhost:54241/Betting/BetfairResults?StartDate=2016-09-25&EndDate=2016-09-26', {
             headers: headers
         })
             .map((res: Response) => {
@@ -169,6 +183,40 @@ export class DataService {
         console.log(betfairResult);
 
        return this.http.post(this._baseBettingUrl + 'selections/', JSON.stringify(betfairResult), {
+            headers: headers
+        })
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    createQualifier(qualifier: ISelection): Observable<ISelection>
+    {
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
+        console.log('data service - createQualifier')
+        console.log(qualifier);
+
+       return this.http.post(this._baseBettingUrl + 'qualifiers/', JSON.stringify(qualifier), {
+            headers: headers
+        })
+            .map((res: Response) => {
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    deleteQualifier(qualifier: ISelection): Observable<ISelection>
+    {
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+
+        console.log('data service - createQualifier')
+        console.log(qualifier);
+
+       return this.http.post(this._baseBettingUrl + 'qualifiers/delete', JSON.stringify(qualifier), {
             headers: headers
         })
             .map((res: Response) => {

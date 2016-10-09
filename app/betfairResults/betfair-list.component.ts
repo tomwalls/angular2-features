@@ -61,7 +61,7 @@ export class BetfairListComponent implements OnInit {
     dashboard: IDashboard;
     apiHost: string;
     systems: string[];
-     @Output() recordCreated = new EventEmitter();
+    @Output() recordCreated = new EventEmitter();
 
     public itemsPerPage: number = 50;
     public totalItems: number = 0;
