@@ -1,6 +1,5 @@
-
 <div class="row">
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-2 col-md-6">
         <div class="card card-inverse card-info">
             <div class="card-block bg-info">
                 <div class="rotate">
@@ -11,7 +10,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-2 col-md-6">
         <div class="card card-inverse card-success">
             <div class="card-block bg-success">
                 <div class="rotate">
@@ -22,7 +21,29 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6">
+     <div class="col-lg-2 col-md-6">
+        <div class="card card-inverse card-success">
+            <div class="card-block bg-warning">
+                <div class="rotate">
+                    <i class="fa fa-thumbs-down fa-5x"></i>
+                </div>
+                <h6 class="text-uppercase">Seconds</h6>
+                <h1 class="display-3" *ngIf="dashboard">{{dashboard.seconds | number:'1.0-0'}}</h1>
+            </div>
+        </div>
+    </div>
+     <div class="col-lg-2 col-md-6">
+        <div class="card card-inverse card-success">
+            <div class="card-block bg-warning">
+                <div class="rotate">
+                    <i class="fa fa-thumbs-down fa-5x"></i>
+                </div>
+                <h6 class="text-uppercase">Thirds</h6>
+                <h1 class="display-3" *ngIf="dashboard">{{dashboard.thirds | number:'1.0-0'}}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-6">
         <div class="card card-inverse card-danger">
             <div class="card-block bg-danger">
                 <div class="rotate">
@@ -33,7 +54,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-2 col-md-6">
         <div class="card card-inverse card-warning">
             <div class="card-block bg-warning">
                 <div class="rotate">
@@ -45,20 +66,25 @@
         </div>
     </div>
 </div>
-
- <div id="container">Placeholder for chart</div>
-<hr/>
-<button class="btn btn-primary" type="button" *ngIf="selections">
-   <i class="fa fa-calendar" aria-hidden="true"></i> selections  
-   <span class="badge">{{totalItems}}</span>
-</button>
-
 <div *ngIf="systems">
-    <button class="btn btn-primary" (click)="loadDashboard()"><i class="fa fa-info-circle" aria-hidden="true"></i>All</button>
+    <button (click)="updateFinishingPositions()" class="btn btn-danger">Update Finishing Positions</button>
+    <button (click)="addSystemToSelectedSystems('All')"><i class="fa fa-info-circle" aria-hidden="true"></i>All</button>
     <span *ngFor="let system of systems">
-        <button class="btn btn-primary" (click)="loadDashboard(system)"><i class="fa fa-info-circle" aria-hidden="true"></i>{{system || 'All'}}</button>
+        <button class="btn btn-primary" ng-class="{'btn-danger': isActive}" (selectionDone)="selectedSystems = system" (click)="addSystemToSelectedSystems(system)"><i class="fa fa-info-circle" aria-hidden="true"></i>{{system || 'All'}}</button>
     </span>
+    <em *ngIf="systems">Systems {{ selectedSystems }}</em> 
 </div>
+<span (click)="displayStartDatePicker = true"> 
+    <em *ngIf="startDate">Start Date {{ startDate | date:"dd/MM/yyyy" }}</em> 
+</span> 
+<datepicker *ngIf= "displayStartDatePicker" [(ngModel)]="startDate" [showWeeks]="false" (selectionDone)="displayStartDatePicker = false"></datepicker>
+<span (click)="displayEndDatePicker = true"> 
+    <em *ngIf="endDate">End Date {{ endDate | date:"dd/MM/yyyy" }}</em> 
+</span> 
+<datepicker *ngIf= "displayEndDatePicker" [(ngModel)]="endDate" [showWeeks]="false" (selectionDone)="displayEndDatePicker = false"></datepicker>
+
+<div id="container">Placeholder for chart</div>
+<hr/>
 <div [@flyInOut]="'in'">
     <table class="table table-hover">
         <thead>
@@ -71,6 +97,7 @@
                 <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Stake</th>
                 <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Odds</th>
                 <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Result</th>
+                <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Position</th>
                 <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Profit</th>
                 <th></th>
                 <th></th>
@@ -78,7 +105,7 @@
             </tr>
         </thead>
         <tbody *ngIf="dashboard">
-            <tr *ngFor="let selection of dashboard.selectionList" [ngClass]="selection.result==true ?'winningSelection':''">
+            <tr *ngFor="let selection of dashboard.selectionList" [ngClass]="selection.result==true ?'winningSelection': selection.position==1 ?'winningSelection': selection.position==2 ?'placeSelection':selection.position==3 ?'placeSelection':''">
                 <td> {{selection.system}}</td>
                 <td>{{selection.subSystem}}</td>
                 <td>{{selection.date | dateFormat | date:'medium'}}</td>
@@ -87,6 +114,7 @@
                 <td>{{selection.stake}}</td>
                 <td>{{selection.odds}}</td>
                 <td>{{selection.result}}</td>
+                <td>{{selection.position}}</td>
                 <td>{{selection.profit}}</td>
                 <td><button class="btn btn-primary" (click)="viewselectionDetails(selection.id)">
             <i class="fa fa-info-circle" aria-hidden="true"></i>Details</button>

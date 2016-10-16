@@ -14,6 +14,8 @@ import { ItemsService } from '../shared/utils/items.service';
 import { NotificationService } from '../shared/utils/notification.service';
 import { ConfigService } from '../shared/utils/config.service';
 import { IDashboard, IGraphData, ISelection, ISelectionDetails, Pagination, PaginatedResult } from '../shared/interfaces';
+import * as moment from 'moment';
+
 
 @Component({
     moduleId: module.id,
@@ -44,6 +46,10 @@ export class SelectionListComponent implements OnInit {
     dashboard: IDashboard;
     apiHost: string;
     systems: string[];
+    selectedSystems: string[] = [];
+    startDate: string = '';
+    endDate: string = '';
+    classList = ["btn-primary", "btn-danger"];
 
     public itemsPerPage: number = 50;
     public totalItems: number = 0;
@@ -76,7 +82,13 @@ export class SelectionListComponent implements OnInit {
        
         console.log(this.options);
         this.apiHost = this.configService.getBettingApiHost();
-        this.loadDashboard(null);
+
+        //this.dashboard.timeStart = moment('2016-04-01').format();
+        //this.dashboard.timeEnd = moment('2016-10-30').format();
+
+        this.startDate = moment('2016-09-01').format();
+        this.endDate = moment('2016-10-30').format();
+        this.loadDashboard(['All']);
         this.loadSystemNames();
     }
 
@@ -111,12 +123,45 @@ export class SelectionListComponent implements OnInit {
             });
     }
 
-    loadDashboard(systemName: string) {
+    loadDashboard(selectedSystems: string[]) {
         this.loadingBarService.start();
 
-        this.dataService.getDashboardData(systemName)
+        this.dataService.getDashboardData(selectedSystems, moment(this.startDate).format(), moment(this.endDate).format())
             .subscribe((res: IDashboard) => {
                 this.dashboard = res;// schedules;
+                
+                console.log('dashboard object');
+                console.log(res);
+                console.log(this.dashboard.graphData.months);
+                
+                Highcharts.chart('container', {
+                    title: {
+                        text: 'Records'
+                    },
+                    xAxis: {
+                        categories: this.dashboard.graphData.months
+                    },
+                    series: [{
+                        data: this.dashboard.graphData.returns
+                    }]
+                });
+
+
+                this.loadingBarService.complete();
+            },
+            error => {
+                this.loadingBarService.complete();
+                this.notificationService.printErrorMessage('Failed to load selections. ' + error);
+            });
+    }
+
+    updateFinishingPositions() {
+        this.loadingBarService.start();
+
+        this.dataService.updateFinishingPositionsThenGetDashboardData(moment(this.startDate).format(), moment(this.endDate).format())
+            .subscribe((res: IDashboard) => {
+                this.dashboard = res;// schedules;
+                
                 console.log('dashboard object');
                 console.log(res);
                 console.log(this.dashboard.graphData.months);
@@ -158,6 +203,32 @@ export class SelectionListComponent implements OnInit {
                 this.notificationService.printErrorMessage('Failed to load selections. ' + error);
             });
     }
+
+    addSystemToSelectedSystems(system: string)
+    {
+        console.log('selected system')
+        console.log(system);
+        if(system == 'All')
+        {
+            this.selectedSystems = ['All'];
+        }
+        else
+        {
+            var index = this.selectedSystems.indexOf(system, 0);
+            if (index > -1) {
+                this.selectedSystems.splice(index, 1);
+            }
+            else
+            {
+                this.selectedSystems.push(system)
+            }
+
+        }
+
+            console.log(this.selectedSystems);
+            this.loadDashboard(this.selectedSystems);
+    }
+
 
     pageChanged(event: any): void {
         this.currentPage = event.page;

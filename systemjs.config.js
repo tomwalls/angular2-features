@@ -32,6 +32,7 @@
             'ng2-file-upload': 'npm:ng2-file-upload',
             'ng2-uploader': 'npm:ng2-uploader',
             'symbol-observable': 'npm:symbol-observable'
+            
         },
         // packages tells the System loader how to load when no filename and/or no extension
         packages: {
@@ -54,4 +55,26 @@
             'symbol-observable': { main: 'index.js', defaultExtension: 'js' }
         }
     });
+    // Load "./app/main.ts" (gets full path from package configuration above).
+    // --
+    // NOTE: We are attaching the resultant promise to the global scope so that other
+    // scripts may listen for the successful loading of the application.
+    global.bootstrapping = System
+        .import( "app" )
+        .then(
+            function handleResolve() {
+
+                console.info( "System.js successfully bootstrapped app." );
+
+            },
+            function handleReject( error ) {
+
+                console.warn( "System.js could not bootstrap the app." );
+                console.error( error );
+
+                return( Promise.reject( error ) );
+
+            }
+        )
+    ;
 })(this);

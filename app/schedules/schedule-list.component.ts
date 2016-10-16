@@ -14,6 +14,7 @@ import { ItemsService } from '../shared/utils/items.service';
 import { NotificationService } from '../shared/utils/notification.service';
 import { ConfigService } from '../shared/utils/config.service';
 import { ISchedule, IScheduleDetails, Pagination, PaginatedResult } from '../shared/interfaces';
+import { Moment } from 'moment';
 
 @Component({
     moduleId: module.id,

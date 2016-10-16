@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
-import { Http, Response, Headers } from '@angular/http';
+import { Http, Response, Headers, URLSearchParams } from '@angular/http';
 //Grab everything with import 'rxjs/Rx';
 import { Observable } from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
@@ -42,16 +42,62 @@ export class DataService {
             .catch(this.handleError);
     }
 
-    getDashboardData(systemName: string): Observable<IDashboard>
+    getDashboardData(selectedSystems: string[], startDate: string, endDate: string): Observable<IDashboard>
     {
+
+        console.log('Selected Systems');
+        console.log(selectedSystems);
         var result: IDashboard;
         let headers = new Headers();
-        if (systemName != null) {
-            headers.append('SystemName', systemName);
+        if (selectedSystems != null) {
+            headers.append('SystemName', selectedSystems.toString());
+            headers.append('StartDate', startDate);
+            headers.append('EndDate', endDate);
         }
+        else{
+            headers.append('StartDate', startDate);
+            headers.append('EndDate', endDate);
+        }
+
+
+        console.log(startDate);
+        console.log(endDate);
+        
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('startDate', startDate.toString());
+        params.set('endDate', endDate.toString());
         
         return this.http.get(this._baseBettingUrl + 'dashboard', {
-            headers: headers
+            headers: headers,
+            search: params
+        })
+            .map((res: Response) => {
+                console.log('headers');
+                console.log(res.headers.keys());
+                console.log(res.json());
+                return res.json();
+            })
+            .catch(this.handleError);
+    }
+
+    updateFinishingPositionsThenGetDashboardData(startDate: string, endDate: string): Observable<IDashboard>
+    {
+
+        var result: IDashboard;
+        let headers = new Headers();
+
+        headers.append('StartDate', startDate);
+        headers.append('EndDate', endDate);
+        
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('startDate', startDate.toString());
+        params.set('endDate', endDate.toString());
+        
+        console.log(startDate);
+
+        return this.http.get(this._baseBettingUrl + 'dashboard/update/finishingPositions', {
+            headers: headers,
+            search: params
         })
             .map((res: Response) => {
                 console.log('headers');

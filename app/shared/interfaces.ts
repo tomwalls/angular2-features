@@ -16,6 +16,8 @@ export interface IDashboard {
      system: string;
      selections: number;
      wins: number;
+     seconds: number;
+     thirds: number;
      losses: number;
      strikeRate: number;
      staked: number;
@@ -25,6 +27,8 @@ export interface IDashboard {
      commission: number;
      selectionList: ISelection[];
      graphData: IGraphData;
+     timeStart: string;
+     timeEnd: string;
 }
 
 export interface IGraphData {

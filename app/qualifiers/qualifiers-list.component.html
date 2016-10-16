@@ -8,20 +8,14 @@
 
 <input type="file" 
        ngFileSelect
-       [options]="options"
-       (onUpload)="handleUpload($event)">
+       [options]="optionsRatings"
+       (onUpload)="handleUploadRatings($event)">
 
-<!-- drag & drop file example-->
-<style>
-  .file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
-</style>
-<div ngFileDrop
-     [options]="options"
-     (onUpload)="handleUpload($event)"
-     [ngClass]="{'file-over': hasBaseDropZoneOver}"
-     (onFileOver)="fileOverBase($event)">
-</div>
 
+<input type="file" 
+       ngFileSelect
+       [options]="optionsFred"
+       (onUpload)="handleUploadFred($event)">
 <div>
 Response: {{ uploadFile | json }}
 </div>
@@ -39,12 +33,10 @@ Response: {{ uploadFile | json }}
                 <th><i class="fa fa-text-width fa-2x" aria-hidden="true"></i>System</th>
                 <th><i class="fa fa-user fa-2x" aria-hidden="true"></i>SubSystem</th>
                 <th><i class="fa fa-paragraph fa-2x" aria-hidden="true"></i>Date</th>
+                <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Time</th>
                 <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Course</th>
                 <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Horse</th>
                 <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Stake</th>
-                <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Odds</th>
-                <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Result</th>
-                <th><i class="fa fa-calendar-o fa-2x" aria-hidden="true"></i>Profit</th>
                 <th></th>
                 <th></th>
                 <th></th>
@@ -55,12 +47,10 @@ Response: {{ uploadFile | json }}
                 <td> {{qualifier.system}}</td>
                 <td>{{qualifier.subsystem}}</td>
                 <td>{{qualifier.date | dateFormat | date:'medium'}}</td>
+                <td>{{qualifier.time}}</td>                
                 <td>{{qualifier.course}}</td>
                 <td>{{qualifier.horse}}</td>
-                <td>{{qualifier.selected}}</td>
-                <td>{{qualifier.odds}}</td>
-                <td>{{qualifier.result}}</td>
-                <td>{{qualifier.profit}}</td>
+                <td>{{qualifier.stake}}</td>
                 <td><button class="btn btn-primary" (click)="createQualifier(qualifier)">
                     <i class="fa fa-info-circle" aria-hidden="true"></i>Add</button>
                 </td>

@@ -45,13 +45,13 @@ const URL = 'http://localhost:8153/api/csv/import';
 })
 export class QualifiersListComponent implements OnInit {
 
-uploadFile: any;
-  hasBaseDropZoneOver: boolean = false;
-  options: Object = {
+uploadFileRatings: any;
+  hasBaseDropZoneOverRatings: boolean = false;
+  optionsRatings: Object = {
     url: 'http://localhost:8153/api/qualifiers/import'
   };
 
-  handleUpload(data): void {
+  handleRatingsUpload(data): void {
       console.log("data");
       console.log(data);
       console.log(data.response);
@@ -61,11 +61,34 @@ uploadFile: any;
       console.log(data.respone);
       data = JSON.parse(data.response);
       console.log(data);
-      this.uploadFile = data;
+      this.uploadFileRatings = data;
     }
 
     this.loadQualifers();
   }
+
+uploadFileFred: any;
+  hasBaseDropZoneOverFred: boolean = false;
+  optionsFred: Object = {
+    url: 'http://localhost:8153/api/qualifiers/import/fred'
+  };
+
+  handleFredUpload(data): void {
+      console.log("data");
+      console.log(data);
+      console.log(data.response);
+    if (data && data.response) {
+      console.log('inside the if')
+      console.log(data);
+      console.log(data.respone);
+      data = JSON.parse(data.response);
+      console.log(data);
+      this.uploadFileFred = data;
+    }
+
+    //this.loadQualifers();
+  }
+
 
   fileOverBase(e:any):void {
     this.hasBaseDropZoneOver = e;
