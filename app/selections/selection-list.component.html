@@ -29,6 +29,7 @@
                 </div>
                 <h6 class="text-uppercase">Seconds</h6>
                 <h1 class="display-3" *ngIf="dashboard">{{dashboard.seconds | number:'1.0-0'}}</h1>
+                <h4 class="display-3" *ngIf="dashboard">{{dashboard.secondsProfit | number:'1.0-0'}}</h4>
             </div>
         </div>
     </div>
@@ -40,6 +41,7 @@
                 </div>
                 <h6 class="text-uppercase">Thirds</h6>
                 <h1 class="display-3" *ngIf="dashboard">{{dashboard.thirds | number:'1.0-0'}}</h1>
+                <h4 class="display-3" *ngIf="dashboard">{{dashboard.thirdsProfit | number:'1.0-0'}}</h4>
             </div>
         </div>
     </div>
@@ -60,8 +62,9 @@
                 <div class="rotate">
                     <i class="fa fa-gbp fa-5x"></i>
                 </div>
-                <h6 class="text-uppercase">Profit</h6>
+                <h6 class="text-uppercase">Balance</h6>
                 <h1 class="display-3" *ngIf="dashboard">{{dashboard.profit | currency:'GBP':true:'1.0-0'}}</h1>
+                <h4 class="display-3" *ngIf="dashboard">{{dashboard.commission | number:'1.0-0'}}</h4>
             </div>
         </div>
     </div>
@@ -115,7 +118,7 @@
                 <td>{{selection.odds}}</td>
                 <td>{{selection.result}}</td>
                 <td>{{selection.position}}</td>
-                <td>{{selection.profit}}</td>
+                <td>{{selection.profit - selection.commission}}</td>
                 <td><button class="btn btn-primary" (click)="viewselectionDetails(selection.id)">
             <i class="fa fa-info-circle" aria-hidden="true"></i>Details</button>
                 </td>

@@ -9,13 +9,13 @@
 <input type="file" 
        ngFileSelect
        [options]="optionsRatings"
-       (onUpload)="handleUploadRatings($event)">
+       (onUpload)="handleRatingsUpload($event)">
 
 
 <input type="file" 
        ngFileSelect
        [options]="optionsFred"
-       (onUpload)="handleUploadFred($event)">
+       (onUpload)="handleFredUpload($event)">
 <div>
 Response: {{ uploadFile | json }}
 </div>

@@ -86,8 +86,8 @@ export class SelectionListComponent implements OnInit {
         //this.dashboard.timeStart = moment('2016-04-01').format();
         //this.dashboard.timeEnd = moment('2016-10-30').format();
 
-        this.startDate = moment('2016-09-01').format();
-        this.endDate = moment('2016-10-30').format();
+        this.startDate = moment('2016-11-01').format();
+        this.endDate = moment('2016-11-30').format();
         this.loadDashboard(['All']);
         this.loadSystemNames();
     }

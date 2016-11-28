@@ -14,7 +14,7 @@ import { ItemsService } from '../shared/utils/items.service';
 import { NotificationService } from '../shared/utils/notification.service';
 import { ConfigService } from '../shared/utils/config.service';
 import { IDashboard, IGraphData, ISelection, ISelectionDetails, Pagination, PaginatedResult } from '../shared/interfaces';
-import { FileUploader } from 'ng2-file-upload';
+//import { FileUploader } from 'ng2-file-upload';
 import { UPLOAD_DIRECTIVES } from 'ng2-uploader';
 
 // upload url
@@ -90,16 +90,18 @@ uploadFileFred: any;
   }
 
 
-  fileOverBase(e:any):void {
-    this.hasBaseDropZoneOver = e;
-  }
-
-    public uploader:FileUploader = new FileUploader({url: URL});
-    public hasAnotherDropZoneOver:boolean = false;
+  //fileOverBaseRating(e:any):void {
+  //  this.hasBaseDropZoneOverRatings = e;
+ // }
+  //fileOverBaseFred(e:any):void {
+  //  this.hasBaseDropZoneOverFred = e;
+ // }
+  //  public uploader:FileUploader = new FileUploader({url: URL});
+    //public hasAnotherDropZoneOver:boolean = false;
     
-    public fileOverAnother(e:any):void {
-    this.hasAnotherDropZoneOver = e;
-    }
+  //  public fileOverAnother(e:any):void {
+    //this.hasAnotherDropZoneOver = e;
+    //}
 
     @ViewChild('childModal') public childModal: ModalDirective;
     qualifiers: ISelection[];

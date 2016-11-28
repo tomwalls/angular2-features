@@ -17,7 +17,9 @@ export interface IDashboard {
      selections: number;
      wins: number;
      seconds: number;
+     secondsProfit: number;
      thirds: number;
+     thirdsProfit: number;
      losses: number;
      strikeRate: number;
      staked: number;
