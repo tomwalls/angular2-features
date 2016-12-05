@@ -8,6 +8,7 @@ import { BetfairListComponent } from './betfairResults/betfair-list.component';
 import { BetfairEditComponent } from './betfairResults/betfair-edit.component';
 import { QualifiersListComponent } from './qualifiers/qualifiers-list.component';
 import { ScheduleEditComponent } from './schedules/schedule-edit.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const appRoutes: Routes = [
     { path: 'users', component: UserListComponent },
@@ -17,6 +18,7 @@ const appRoutes: Routes = [
     { path: 'betfair', component: BetfairListComponent },
     { path: 'betfairResult/:id/edit', component: BetfairEditComponent },
     { path: 'qualifiers', component: QualifiersListComponent },
+    { path: 'dashboard', component: DashboardComponent },
     { path: '', component: HomeComponent }
 ];
 

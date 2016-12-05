@@ -24,6 +24,7 @@ import { SelectionListComponent } from './selections/selection-list.component';
 import { QualifiersListComponent } from './qualifiers/qualifiers-list.component';
 import { BetfairListComponent } from './betfairResults/betfair-list.component';
 import { BetfairEditComponent } from './betfairResults/betfair-edit.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserCardComponent } from './users/user-card.component';
 import { UserListComponent } from './users/user-list.component';
 import { routing } from './app.routes';
@@ -67,7 +68,8 @@ import { NotificationService } from './shared/utils/notification.service';
         UPLOAD_DIRECTIVES,
         NgFileDropDirective,
         FileDropDirective,
-        FileSelectDirective
+        FileSelectDirective,
+        DashboardComponent
     ],
     providers: [
         ConfigService,
